@@ -6,8 +6,6 @@ endif()
 
 project(furnace)
 
-add_compile_options("-g")
-
 if (APPLE)
   enable_language(OBJC)
 endif()
@@ -454,6 +452,11 @@ src/gui/volMeter.cpp
 src/gui/gui.cpp
 )
 
+set_source_files_properties(
+    src/engine/fileOps.cpp
+    PROPERTIES COMPILE_FLAGS -g
+)
+
 if (APPLE)
   list(APPEND GUI_SOURCES src/gui/macstuff.m)
 endif()
@@ -549,7 +552,7 @@ endif()
 
 if (NOT ANDROID)
   install(TARGETS furnace RUNTIME DESTINATION bin)
-  
+
   if (NOT WIN32 AND NOT APPLE)
     include(GNUInstallDirs)
     install(FILES res/furnace.desktop DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
@@ -559,11 +562,11 @@ if (NOT ANDROID)
     install(DIRECTORY demos DESTINATION ${CMAKE_INSTALL_DATADIR}/furnace)
     install(FILES res/logo.png RENAME furnace.png DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/1024x1024/apps)
   endif()
-  
+
   set(CPACK_PACKAGE_NAME "Furnace")
   set(CPACK_PACKAGE_VENDOR "tildearrow")
   set(CPACK_PACKAGE_DESCRIPTION "free and open-source chiptune tracker")
-  
+
   if (APPLE)
     set(CPACK_GENERATOR Bundle)
     set(CPACK_DMG_SLA_DIR ${CMAKE_SOURCE_DIR}/res/macLicense)
@@ -574,6 +577,6 @@ if (NOT ANDROID)
     set(CPACK_BUNDLE_ICON ${CMAKE_SOURCE_DIR}/res/icon.icns)
     set(CPACK_BUNDLE_STARTUP_COMMAND "furnace")
   endif()
-  
+
   include(CPack)
 endif()
