@@ -6,6 +6,8 @@ endif()
 
 project(furnace)
 
+add_compile_options("-g")
+
 if (APPLE)
   enable_language(OBJC)
 endif()

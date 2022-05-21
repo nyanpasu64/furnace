@@ -2,9 +2,7 @@ name: Build furnace
 
 on:
   push:
-    branches: master
-  pull_request:
-    branches: master
+    branches: '*'
 
 defaults:
   run:
@@ -18,12 +16,7 @@ jobs:
     strategy:
       matrix:
         config:
-          - { name: 'Windows MSVC x86', os: windows-latest, compiler: msvc, arch: x86 }
-          - { name: 'Windows MSVC x86_64', os: windows-latest, compiler: msvc, arch: x86_64 }
-          - { name: 'Windows MinGW x86', os: ubuntu-20.04, compiler: mingw, arch: x86 }
           - { name: 'Windows MinGW x86_64', os: ubuntu-20.04, compiler: mingw, arch: x86_64 }
-          - { name: 'macOS', os: macos-latest }
-          - { name: 'Ubuntu', os: ubuntu-18.04 }
       fail-fast: false
 
     name: ${{ matrix.config.name }}
@@ -224,17 +217,6 @@ jobs:
         binPath=build
         if [ '${{ matrix.config.compiler }}' == 'msvc' ]; then
           binPath="${binPath}/${{ env.BUILD_TYPE }}"
-        fi
-        if [ '${{ matrix.config.compiler }}' == 'mingw' ] && [ '${{ env.BUILD_TYPE }}' == 'Release' ]; then
-          # arch-specific strip prefix
-          # TODO maybe extract from cross toolchain files?
-          toolPrefix="-w64-mingw32-"
-          if [ '${{ matrix.config.arch }}' == 'x86_64' ]; then
-            toolPrefix="x86_64${toolPrefix}"
-          else
-            toolPrefix="i686${toolPrefix}"
-          fi
-          ${toolPrefix}strip -s "${binPath}/furnace.exe"
         fi
 
         mkdir ${{ steps.package-identify.outputs.filename }}
